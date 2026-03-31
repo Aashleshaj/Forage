@@ -23,7 +23,13 @@ metric_map = {
 def get_financial_data(company, metric, year):
     if df.empty: 
         return "Database error: CSV file missing."
+    
+    #Here, metric would be the user-friendly term (like "revenue") that was passed to the function. 
+    #The .get() method of the dictionary looks up this metric in our metric_map
     col_name = metric_map.get(metric)
+    #It takes the metric (e.g., "revenue") provided by the Chatbot Query Resolver and looks up its 
+    #corresponding technical column name (e.g., "Total Revenue") in the metric_map dictionary.
+
     # Filter the DataFrame for the specific company and year
     result = df[(df['Company Name'].str.lower() == company.lower()) & (df['Fiscal Year'] == year)]
     if not result.empty:
@@ -71,41 +77,40 @@ def find_highest_cash_flow(year):
         
     return "Data not available for that year."
 
+# function definition and cleaning the input
 def simple_chatbot(user_query):
     query = user_query.strip().lower()
-    # Define our present year dynamically based on the CSV
-    present_year = int(df['Fiscal Year'].max()) if not df.empty else 2025
 
+    #After get_financial_data returns the raw revenue figure (like "$245,000 Million"), 
+    #simple_chatbot uses an f-string to combine this result into a complete, user-friendly sentence.'''
     if query == "what is microsoft's total revenue for 2025?":
         result = get_financial_data("microsoft", "revenue", 2025)
         return f"Microsoft's total revenue for FY 2025 was {result}."
     
     elif query == "what is apple's total revenue for 2025?":
-        result = get_financial_data("apple", "revenue", 2025)
+        result = get_financial_data("Apple", "revenue", 2025)
         return f"Apple's total revenue for FY 2025 was {result}."
     
     elif query == "what is tesla's total revenue for 2025?":
-        result = get_financial_data("tesla", "revenue", 2025)
+        result = get_financial_data("Tesla", "revenue", 2025)
         return f"Tesla's total revenue for FY 2025 was {result}."
     
+    # calculate_net_income_change is called with the company name and the two years to compare. 
+    # It returns a string like "increased from $X Million in 2024 to $Y Million in 2025", which is then 
+    # embedded into a complete sentence for the user.
+
     elif query == "how has apple's net income changed from 2024 to 2025?":
         result = calculate_net_income_change("apple", 2024, 2025)
         return f"Apple's net income {result}."
-        
-    elif query == "how has Tesla's net income changed from 2024 to 2025?":
-        result = calculate_net_income_change("tesla", 2024, 2025)
-        return f"Tesla's net income {result}."
     
-    elif query == "how has Microsoft's net income changed from 2024 to 2025?":
-        result = calculate_net_income_change("microsoft", 2024, 2025)
-        return f"Microsoft's net income {result}."
-    
+    # ''' find_highest_cash_flow is called with the year as an argument. It returns a string like 
+    # s"CompanyName at $X Million", which is then used to construct the final response.'''
     elif query == "which company had the highest operating cash flow in 2025?":
         result = find_highest_cash_flow(2025)
         return f"The highest operating cash flow in 2025 was {result}."
-        
+
     elif query == "what is tesla's net income for 2025?":
-        result = get_financial_data("tesla", "net_income", 2025)
+        result = get_financial_data("Tesla", "net_income", 2025)
         return f"Tesla's net income for FY 2025 was {result}."
 
     elif query == "what is apple's net income for 2025?":
@@ -131,12 +136,10 @@ with st.sidebar:
     2. What is Apple's total revenue for 2025?
     3. What is Tesla's total revenue for 2025?
     4. How has Apple's net income changed from 2024 to 2025?
-    5. How has Tesla's net income changed from 2024 to 2025?
-    6. How has Microsoft's net income changed from 2024 to 2025?
-    7. Which company had the highest operating cash flow in 2025?
-    8. What is Tesla's net income for 2025?
-    9. What is Apple's net income for 2025?
-    10. What is Microsoft's net income for 2025?
+    5. Which company had the highest operating cash flow in 2025?
+    6. What is Tesla's net income for 2025?
+    7. What is Apple's net income for 2025?
+    8. What is Microsoft's net income for 2025?
     """)
 
 # Initialize chat history in session state
@@ -150,9 +153,10 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# Accept user input
+# creates the text input box at the bottom. When the user types something and presses Enter, 
+# their text is stored in the prompt variable, and the code inside the if block runs.
 if prompt := st.chat_input("Type your query here..."):
-    # 1. Display user message and save it to history
+    # we add this user message to our st.session_state.messages list so it's remembered.
     with st.chat_message("user"):
         st.markdown(prompt)
     st.session_state.messages.append({"role": "user", "content": prompt})
