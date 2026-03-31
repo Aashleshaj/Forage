@@ -1,26 +1,34 @@
-Financial AI Chatbot designed to act as a personal financial analyst. It allows users to ask specific questions about companies' financial performance, such as their revenue or net income, for different years. The chatbot retrieves this information from a centralized financial data model and provides clear, quick answers through an interactive chat interface, while also maintaining a visual history of the conversation.
+1. Project Overview
+This project is a prototype web-based AI chatbot designed to provide instant financial insights based on SEC 10-K filings. Built using Python, Pandas, and the Streamlit framework, the chatbot allows users to query specific financial metrics (Revenue, Net Income, and Operating Cash Flow) for major technology companies (Apple, Microsoft, and Tesla) across recent fiscal years.
 
-It's built using a magical Python library called Streamlit. Its main job is to create the visual "conversation room" where users can talk to the chatbot. Without it, our powerful financial brain wouldn't have a way to communicate with anyone!
+2. Core Functionality
+Interactive Web Interface: Utilizes Streamlit to provide a modern, chat-based User Interface (UI) where users can seamlessly type questions and read formatted responses.
 
-Key Features of Our Chat Interface
-Our chat interface has a few main components, all powered by Streamlit:
+Data-Driven Responses: Connects to a local, structured dataset (Financial_Data.csv) using the Pandas library, ensuring all financial figures returned are accurate and grounded in verified data rather than AI hallucinations.
 
-The Chatbot's "Welcome Mat": The Title and Sidebar
-This sets the stage, giving our chatbot a name and a clear purpose.
-The sidebar acts like a helpful menu, showing you what the chatbot can do or examples of questions you can ask.
-The "Conversation Scroll": Displaying Past Messages
-Just like scrolling through a text message history, our interface shows all the previous turns in the conversation.
-It clearly labels who said what (you or the chatbot).
-The "Speaking Tube": The Input Box
-This is where you type your questions. It's the primary way you initiate a conversation with the AI.
-The "Memory Board": Storing the Conversation
-Our chatbot remembers what has been said using something called st.session_state. This is like a whiteboard where we quickly jot down each message as it happens, so we don't forget the flow of the conversation.
+State Management (Context Memory): Employs Streamlit's session_state to remember the context of the conversation. If a user asks a broad question (e.g., "What is the total revenue?"), the bot will pause, ask which company the user means, remember that interaction, and process the user's subsequent reply correctly.
 
-How We Use the Interface: A Simple Chat Example
-Let's walk through a typical interaction:
-User Input: "What is Microsoft's total revenue for 2025?"
-Chatbot Output: "Microsoft's total revenue for FY 2025 was $245,000 Million."
-This seems straightforward, but behind the scenes, our Interactive Chat Interface is orchestrating everything you see!
-- Instead of flask stramlit is used as it is easy to use and create data-driven UI
-To run the chatboat we need to run the below command used stramlit as it is easy to use and create data-driven UI
-streamlit run .\chatbot.py
+Supported Queries: The chatbot is programmed to accurately route and answer the following predefined intents:
+
+Total Revenue inquiries (e.g., "What is Microsoft's total revenue?")
+
+Net Income inquiries (e.g., "What is the net income for Tesla?")
+
+Year-over-Year calculations (e.g., "How has Apple's net income changed?")
+
+Comparative metrics (e.g., "Which company had the highest cash flow?")
+
+3. Known Limitations
+As a streamlined prototype, the chatbot has several purposeful limitations:
+
+Rule-Based Logic (No NLP): The bot relies on hardcoded if/elif statements and strict keyword matching (e.g., looking for the exact phrase "net income change"). It lacks advanced Natural Language Processing (NLP) or Large Language Model (LLM) integrations, meaning it cannot understand complex phrasing, spelling errors, or questions outside its programmed scope.
+
+Static Dataset: The application relies on a static .csv file. It does not currently feature API integration to automatically fetch real-time data or new SEC filings from the web.
+
+Limited Scope: The database is currently restricted to three specific companies (AAPL, MSFT, TSLA) and primarily covers the fiscal years 2024 and 2025.
+
+4. How to Run the Application
+- Ensure Python is installed on your machine.
+- Install the required libraries via the terminal: pip install streamlit pandas
+- Ensure app.py and data.csv are in the same directory.
+- Run the application from the terminal: streamlit run app.py
